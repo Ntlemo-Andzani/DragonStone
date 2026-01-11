@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Admin Dashboard - DragonStone</title>
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <section id="header">
+            <a><span class="Logo"><strong>DragonStone Admin</strong></span></a>
+            
+            <div style="flex: 1;"></div>
+
+            <div>
+                <ul id="navbar">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="admin.html" class="active">Admin Dashboard</a></li>
+                    <li><a href="#" id="logout-link">Logout</a></li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="admin-dashboard-main" class="section-p1">
+            <h2>Admin Dashboard</h2>
+            <p>Manage users, products, and orders for DragonStone E-commerce</p>
+            
+            <!-- Admin Tabs -->
+            <div class="admin-tabs">
+                <button class="tab-btn active" data-tab="users">User Management</button>
+                <button class="tab-btn" data-tab="products">Product Management</button>
+                <button class="tab-btn" data-tab="orders">Order Management</button>
+                <button class="tab-btn" data-tab="analytics">Analytics & Reports</button>
+                <button class="tab-btn" data-tab="community">Forum Moderation</button>
+                <button class="tab-btn" data-tab="support">User Support</button>
+                <button class="tab-btn" data-tab="content">Content Review</button>
+                <button class="tab-btn" data-tab="customer-support">Customer Support</button>
+            </div>
+
+            <!-- User Management Tab -->
+            <div id="users-tab" class="tab-content active">
+                <div class="admin-section-header">
+                    <h3>User Management</h3>
+                    <button class="btn-primary" id="add-user-btn">Add New User</button>
+                </div>
+                
+                <div class="admin-filters">
+                    <input type="text" id="user-search" placeholder="Search users by name or email..." class="search-input">
+                    <select id="user-role-filter" class="filter-select">
+                        <option value="all">All Roles</option>
+                        <option value="user">Users</option>
+                        <option value="admin">Admins</option>
+                    </select>
+                </div>
+
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Role</th>
+                                <th>EcoPoints</th>
+                                <th>Registered</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <h4>Total Users</h4>
+                        <p id="total-users-count">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Active Customers</h4>
+                        <p id="active-users-count">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Admins</h4>
+                        <p id="admin-count">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Management Tab -->
+            <div id="products-tab" class="tab-content">
+                <div class="admin-section-header">
+                    <h3>Product Management</h3>
+                    <button class="btn-primary" id="add-product-btn">Add New Product</button>
+                </div>
+
+                <div class="admin-filters">
+                    <input type="text" id="product-search" placeholder="Search products..." class="search-input">
+                    <select id="product-category-filter" class="filter-select">
+                        <option value="all">All Categories</option>
+                        <option value="Eco-Friendly">Eco-Friendly</option>
+                        <option value="Personal Care">Personal Care</option>
+                        <option value="Household">Household</option>
+                        <option value="Electronics">Electronics</option>
+                    </select>
+                </div>
+
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Carbon Footprint</th>
+                                <th>Stock</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-table-body">
+                            <!-- Products will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <h4>Total Products</h4>
+                        <p id="total-products-count">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Categories</h4>
+                        <p id="categories-count">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Low Stock</h4>
+                        <p id="low-stock-count">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Management Tab -->
+            <div id="orders-tab" class="tab-content">
+                <div class="admin-section-header">
+                    <h3>Order Management</h3>
+                    <button class="btn-secondary" id="export-orders-btn">Export Orders</button>
+                </div>
+
+                <div class="admin-filters">
+                    <input type="text" id="order-search" placeholder="Search orders by ID or customer..." class="search-input">
+                    <select id="order-status-filter" class="filter-select">
+                        <option value="all">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="processing">Processing</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="returned">Returned</option>
+                    </select>
+                    <input type="date" id="order-date-filter" class="filter-select">
+                </div>
+
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table-body">
+                            <!-- Orders will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <h4>Total Orders</h4>
+                        <p id="total-orders-count">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Pending</h4>
+                        <p id="pending-orders-count">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Total Revenue</h4>
+                        <p id="total-revenue">R0.00</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="analytics-tab" class="tab-content">
+                <h3>Analytics & Reports</h3>
+                
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h4>Sales Overview</h4>
+                        <canvas id="sales-chart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>Top Products</h4>
+                        <div id="top-products-list"></div>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>User Engagement</h4>
+                        <div id="user-engagement-stats"></div>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>Environmental Impact</h4>
+                        <div id="environmental-impact-stats"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Community / Forum Moderation Tab -->
+            <div id="community-tab" class="tab-content">
+                <div class="admin-section-header">
+                    <h3>Forum Moderation</h3>
+                    <p>Review, approve or remove user-generated posts from the community blog/discussion area.</p>
+                </div>
+
+                <div class="admin-filters">
+                    <input type="text" id="post-search" placeholder="Search posts by title or author..." class="search-input">
+                    <select id="post-status-filter" class="filter-select">
+                        <option value="all">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="flagged">Flagged</option>
+                        <option value="removed">Removed</option>
+                    </select>
+                </div>
+
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Post</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="posts-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- User Support Tab -->
+            <div id="support-tab" class="tab-content">
+                <div class="admin-section-header">
+                    <h3>User Support</h3>
+                    <p>Monitor user inquiries, respond to tickets and review flagged content.</p>
+                </div>
+
+                <div class="admin-filters">
+                    <input type="text" id="support-search" placeholder="Search tickets by user or subject..." class="search-input">
+                    <select id="support-status-filter" class="filter-select">
+                        <option value="all">All</option>
+                        <option value="open">Open</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Subject</th>
+                                <th>Message</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="support-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Content Review Tab -->
+            <div id="content-tab" class="tab-content">
+                <div class="admin-section-header">
+                    <h3>Content Review</h3>
+                    <p>Verify sustainability claims and ensure posts comply with community environmental standards.</p>
+                </div>
+
+                <div id="content-review-area">
+                    <p>Use the community moderation panel to inspect content. Below are recent comments left on posts for review. Admins can delete inappropriate comments.</p>
+
+                    <div class="admin-filters" style="margin-top:12px;">
+                        <input type="text" id="comment-search" placeholder="Search comments by author, content or post title..." class="search-input">
+                        <select id="comment-status-filter" class="filter-select" style="display:none;">
+                            <option value="all">All</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-table-container" style="margin-top:12px;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Post</th>
+                                    <th>Author</th>
+                                    <th>Comment</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="comments-table-body">
+                                <!-- Comments will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Support Tab -->
+            <div id="customer-support-tab" class="tab-content">
+                <div class="admin-section-header">
+                    <h3>Customer Support</h3>
+                    <p>Process returns, handle account and order questions, and manage customer inquiries.</p>
+                </div>
+
+                <div id="customer-support-area">
+                    <p>Returns and exchanges can be handled from the Order Management panel. Customer support tickets appear in the User Support tab.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Modal -->
+        <div id="user-modal" class="modal" style="display:none">
+            <div class="modal-overlay" id="user-modal-overlay"></div>
+            <div class="modal-content admin-modal-content">
+                <button class="close-modal" id="close-user-modal">&times;</button>
+                <h3 id="user-modal-title">Add User</h3>
+                <form id="user-form">
+                    <input type="hidden" id="user-id" name="id">
+                    <label for="user-name">Full Name</label>
+                    <input type="text" id="user-name" name="name" required>
+                    
+                    <label for="user-email">Email</label>
+                    <input type="email" id="user-email" name="email" required>
+                    
+                    <label for="user-phone">Phone Number</label>
+                    <input type="tel" id="user-phone" name="phone">
+                    
+                    <label for="user-role">Role</label>
+                    <select id="user-role" name="role" required>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    
+                    <label for="user-ecopoints">EcoPoints</label>
+                    <input type="number" id="user-ecopoints" name="ecopoints" value="100" min="0">
+                    
+                    <label for="user-password">Password</label>
+                    <input type="password" id="user-password" name="password" placeholder="Leave blank to keep current">
+                    
+                    <div class="modal-actions">
+                        <button type="submit" class="btn-primary">Save User</button>
+                        <button type="button" class="btn-secondary" id="cancel-user-modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Product Modal -->
+        <div id="product-modal" class="modal" style="display:none">
+            <div class="modal-overlay" id="product-modal-overlay"></div>
+            <div class="modal-content admin-modal-content" style="max-width: 800px;">
+                <button class="close-modal" id="close-product-modal-btn">&times;</button>
+                <h3 id="product-modal-title">Add Product</h3>
+                <form id="product-form">
+                    <input type="hidden" id="product-id" name="id">
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label for="product-name">Product Name</label>
+                            <input type="text" id="product-name" name="name" required>
+                        </div>
+                        
+                        <div>
+                            <label for="product-category">Category</label>
+                            <select id="product-category" name="category" required>
+                                <option value="Eco-Friendly">Eco-Friendly</option>
+                                <option value="Personal Care">Personal Care</option>
+                                <option value="Household">Household</option>
+                                <option value="Electronics">Electronics</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <label for="product-description">Description</label>
+                    <textarea id="product-description" name="description" rows="3" required></textarea>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label for="product-price">Price (R)</label>
+                            <input type="number" id="product-price" name="price" step="0.01" required>
+                        </div>
+                        
+                        <div>
+                            <label for="product-stock">Stock</label>
+                            <input type="number" id="product-stock" name="stock" min="0" required>
+                        </div>
+                        
+                        <div>
+                            <label for="product-image">Image URL</label>
+                            <input type="text" id="product-image" name="image" placeholder="img/product.jpg">
+                        </div>
+                    </div>
+                    
+                    <h4 style="margin-top: 20px;">Environmental Data</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label for="product-carbon">Carbon Footprint (kg CO₂)</label>
+                            <input type="number" id="product-carbon" name="carbonFootprint" step="0.1" min="0" required>
+                        </div>
+                        
+                        <div>
+                            <label for="product-waste">Waste Saved (kg)</label>
+                            <input type="number" id="product-waste" name="wasteSaved" step="0.1" min="0" required>
+                        </div>
+                        
+                        <div>
+                            <label for="product-water">Water Saved (L)</label>
+                            <input type="number" id="product-water" name="waterSaved" step="1" min="0" required>
+                        </div>
+                    </div>
+                    
+                    <label for="product-sustainability">Sustainability Points (one per line)</label>
+                    <textarea id="product-sustainability" name="sustainability" rows="5" placeholder="100% reusable and washable&#10;Made from organic materials&#10;Biodegradable"></textarea>
+                    
+                    <div class="modal-actions">
+                        <button type="submit" class="btn-primary">Save Product</button>
+                        <button type="button" class="btn-secondary" id="cancel-product-modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Order Detail Modal -->
+        <div id="order-detail-modal" class="modal" style="display:none">
+            <div class="modal-overlay" id="order-detail-overlay"></div>
+            <div class="modal-content admin-modal-content" style="max-width: 900px;">
+                <button class="close-modal" id="close-order-detail-modal">&times;</button>
+                <h3>Order Details</h3>
+                <div id="order-detail-content">
+                    <!-- Order details will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <footer class="section-p1">
+            <div class="col">
+                <h4>Contact</h4>
+                <p><strong>Address: </strong> 643 Burrnett Road, 2nd Ave, Pretoria</p>
+                <p><strong>Phone: </strong> + 27 12 259 2998</p>
+                <p><strong>Hours: </strong> 08:00 - 18:00, MON - SAT </p>
+            </div>
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="auth/supabaseClient.js"></script>
+        <script src="auth/auth.js"></script>
+        <script src="modals.js"></script>
+        <script src="admin.js"></script>
+        <script src="script.js"></script>
+    </body>
+</html>
+
+
+

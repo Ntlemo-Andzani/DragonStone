@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Community Blog - DragonStone</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="blog.css">
+    <style>
+        /* Stack form controls vertically inside create-post */
+        #create-post label { display: block; margin-bottom: 6px; font-weight:600; }
+        #create-post input[type="text"],
+        #create-post input[type="email"],
+        #create-post input[type="tel"],
+        #create-post input,
+        #create-post textarea { display: block; width: 100%; box-sizing: border-box; margin-bottom: 12px; }
+        #post-body { min-height: 220px; }
+
+        /* Space between displayed posts */
+        #posts-container .post-card { margin-bottom: 40px; }
+
+    /* Give space between the message textarea and the Post button */
+    #create-post .post-submit-row { margin-top: 40px; margin-bottom: 40px; }
+    </style>
+</head>
+<body>
+    <section id="header">
+        <a><span class="Logo"><strong>DragonStone</strong></span></a>
+        <div style="display:inline-block; margin-left:20px; vertical-align: middle;">
+            <ul id="navbar">
+                <li><a class="active" href="index.html" id="home-link">Home</a></li>
+                <li><button id="create-post-btn" class="btn-primary">Create Post</button></li>
+                <li><a href="admin.html" id="admin-link" style="display:none;">Admin</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <main class="section-p1">
+        <section id="blog-page">
+            <div class="blog-hero">
+                <h1>Community Blog</h1>
+                <p>Share sustainability tips, ask questions and join the conversation.</p>
+            </div>
+
+        <div id="create-post" style="display:none;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+                <h3>Create a Post</h3>
+                <button id="close-create-post" class="btn-secondary">Close</button>
+            </div>
+            <form id="post-form">
+                <label for="post-author">Author: </label>
+                <input id="post-author" name="author" placeholder="Name">
+
+                <label for="post-title">Title: </label>
+                <input id="post-title" name="title" required>
+
+                <label for="post-body">Message:</label>
+                <textarea id="post-body" name="body" rows="10" required></textarea>
+
+                <div class="post-submit-row">
+                    <button type="submit" class="btn-primary">Post</button>
+                </div>
+            </form>
+        </div>
+
+        <hr />
+
+        <!-- ADMIN CONTENT REVIEW SECTION (hidden for non-admins) -->
+        <section id="admin-content-review" style="display:none; margin-bottom:40px; padding:20px; background:#f5f5f5; border-radius:8px;">
+            <h3>Content Moderation</h3>
+            <p style="font-size:14px; color:#666;">Review and moderate blog comments.</p>
+            
+            <div style="margin-top:20px;">
+                <input type="text" id="comment-search" placeholder="Search comments by text, author, or post..." style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ddd; border-radius:4px;">
+                
+                <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                    <thead>
+                        <tr style="background:#e0e0e0; border-bottom:1px solid #999;">
+                            <th style="padding:8px; text-align:left;">Comment</th>
+                            <th style="padding:8px; text-align:left;">Author</th>
+                            <th style="padding:8px; text-align:left;">Post</th>
+                            <th style="padding:8px; text-align:left;">Date</th>
+                            <th style="padding:8px; text-align:left;">Status</th>
+                            <th style="padding:8px; text-align:center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="comments-moderation-list">
+                        <!-- admin will render comments here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="posts-list">
+            <h3>Latest Posts</h3>
+            <div id="posts-container">
+                <!-- posts inserted here -->
+            </div>
+        </section>
+        </section>
+    </main>
+
+    <script>
+    (function(){
+        function fetchPosts(){
+            return fetch('blog.php').then(function(r){ return r.json(); }).then(function(data){ if(data && data.success) return data.posts; return []; }).catch(function(){
+                // fallback to localStorage
+                try{ return JSON.parse(localStorage.getItem('posts')) || []; } catch(e){ return []; }
+            });
+        }
+
+        function renderPosts(posts){
+            var container = document.getElementById('posts-container');
+            container.innerHTML = '';
+            if(!posts || posts.length === 0){ container.innerHTML = '<p>No posts yet — be the first to share!</p>'; return; }
+            posts.forEach(function(p){
+                var el = document.createElement('div');
+                el.className = 'post-card';
+
+                // Build comments HTML if any
+                var comments = p.comments || [];
+                // Filter out deleted comments (unless user is admin)
+                var isAdmin = (function(){
+                    try{ return JSON.parse(localStorage.getItem('userProfile') || '{}').role === 'admin'; } catch(e){ return false; }
+                })();
+                var visibleComments = isAdmin ? comments : comments.filter(function(c){ return c.status !== 'deleted'; });
+                
+                var commentsHtml = '';
+                if(visibleComments.length === 0){
+                    commentsHtml = '<p class="no-comments">No comments yet.</p>';
+                } else {
+                    commentsHtml = '<div class="comments-list">' + visibleComments.map(function(c){
+                        return '<div class="comment"><strong>'+ (c.author || 'Anonymous') +'</strong> <small>• '+ (c.created_at ? new Date(c.created_at).toLocaleString() : '') +'</small><div class="comment-body">'+ (c.body || '') +'</div></div>';
+                    }).join('') + '</div>';
+                }
+
+                el.innerHTML = '<h4>'+ (p.title || '(no title)') +'</h4>' +
+                    '<p class="meta">By ' + (p.author || 'Anonymous') + ' • ' + (p.created_at ? new Date(p.created_at).toLocaleString() : '') + '</p>' +
+                    '<div class="post-body">'+ (p.body || '') +'</div>' +
+                    '<div class="post-comments" id="post-comments-'+ (p.id || '') +'">' + commentsHtml + '</div>' +
+                    '<div class="post-comment-controls">' +
+                        '<button class="btn-sm comment-btn" data-id="'+ (p.id || '') +'">Add Comment</button>' +
+                        '<div class="comment-form" id="comment-form-'+ (p.id || '') +'" style="display:none; margin-top:8px;">' +
+                            '<textarea class="comment-input" id="comment-input-'+ (p.id || '') +'" rows="3" style="width:100%" placeholder="Write your comment..."></textarea>' +
+                            '<div style="margin-top:6px;"><button class="btn-primary submit-comment" data-id="'+ (p.id || '') +'">Submit</button></div>' +
+                        '</div>' +
+                    '</div>';
+
+                container.appendChild(el);
+            });
+
+            // Wire comment buttons after rendering
+            setTimeout(function(){
+                var commentBtns = container.querySelectorAll('.comment-btn');
+                commentBtns.forEach(function(b){
+                    b.addEventListener('click', function(e){
+                        var postId = b.getAttribute('data-id');
+                        // require login
+                        var user = null;
+                        try{ user = JSON.parse(localStorage.getItem('currentUser')) || null; } catch(e){ user = null; }
+                        if(!user){
+                            // Try to open site login if available else redirect
+                            if(typeof window.showModal === 'function'){
+                                try{ window.showModal(); return; } catch(e){}
+                            }
+                            alert('Please sign in to comment.');
+                            window.location.href = 'index.html';
+                            return;
+                        }
+                        var form = document.getElementById('comment-form-'+postId);
+                        if(form) form.style.display = '';
+                    });
+                });
+
+                var submitBtns = container.querySelectorAll('.submit-comment');
+                submitBtns.forEach(function(sb){
+                    sb.addEventListener('click', function(){
+                        var postId = sb.getAttribute('data-id');
+                        var input = document.getElementById('comment-input-'+postId);
+                        if(!input) return;
+                        var text = input.value.trim();
+                        if(!text) return alert('Please write a comment before submitting.');
+                        var user = null;
+                        try{ user = JSON.parse(localStorage.getItem('currentUser')) || null; } catch(e){ user = null; }
+                        if(!user){ alert('Please sign in to submit comments.'); window.location.href = 'index.html'; return; }
+
+                        // Save comment locally (and keep UI optimistic)
+                        try{
+                            var posts = JSON.parse(localStorage.getItem('posts')) || [];
+                            var idx = posts.findIndex(function(pp){ return String(pp.id) === String(postId); });
+                            var commentObj = { id: 'c-'+Date.now(), author: user.name || user.email || 'User', body: text, created_at: new Date().toISOString(), status: 'approved' };
+                            if(idx !== -1){
+                                posts[idx].comments = posts[idx].comments || [];
+                                posts[idx].comments.push(commentObj);
+                            } else {
+                                // If post not found locally, push a minimal comment attachment by id only
+                                posts.push({ id: postId, comments: [commentObj] });
+                            }
+                            localStorage.setItem('posts', JSON.stringify(posts));
+                            // Update displayed comments
+                            var commentsContainer = document.getElementById('post-comments-'+postId);
+                            if(commentsContainer){
+                                var existing = commentsContainer.querySelector('.no-comments');
+                                if(existing) existing.remove();
+                                var div = document.createElement('div');
+                                div.className = 'comment';
+                                div.innerHTML = '<strong>'+ (commentObj.author) +'</strong> <small>• '+ new Date(commentObj.created_at).toLocaleString() +'</small><div class="comment-body">'+ commentObj.body +'</div>';
+                                commentsContainer.appendChild(div);
+                            }
+                            // hide form and clear
+                            var form = document.getElementById('comment-form-'+postId);
+                            if(form){ form.style.display = 'none'; }
+                            input.value = '';
+                        } catch(e){ console.error('Failed to save comment', e); alert('Failed to save comment locally.'); }
+                    });
+                });
+            }, 10);
+        }
+
+        function refresh(){
+            fetchPosts().then(function(posts){
+                renderPosts(posts);
+            });
+        }
+
+        document.getElementById('post-form').addEventListener('submit', function(e){
+            e.preventDefault();
+            var author = document.getElementById('post-author').value || 'Anonymous';
+            var title = document.getElementById('post-title').value;
+            var body = document.getElementById('post-body').value;
+
+            // Optimistic local save
+            var posts = [];
+            try{ posts = JSON.parse(localStorage.getItem('posts')) || []; } catch(e){}
+            var newPost = { id: 'local-' + Date.now(), author: author, title: title, body: body, status: 'pending', created_at: new Date().toISOString() };
+            posts.unshift(newPost);
+            localStorage.setItem('posts', JSON.stringify(posts));
+            renderPosts(posts);
+
+            // Try to send to server
+            var form = new FormData();
+            form.append('author', author);
+            form.append('title', title);
+            form.append('body', body);
+            fetch('api/create_post.php', { method: 'POST', body: form })
+                .then(function(res){ return res.json(); })
+                .then(function(data){
+                    if(data && data.success && data.post){
+                        // replace local placeholder id with server id
+                        try{
+                            var localPosts = JSON.parse(localStorage.getItem('posts')) || [];
+                            localPosts = localPosts.map(function(p){ return p.id === newPost.id ? data.post : p; });
+                            localStorage.setItem('posts', JSON.stringify(localPosts));
+                            renderPosts(localPosts);
+                        } catch(e){}
+                    }
+                })
+                .catch(function(){ /* ignore network errors - local copy remains */ });
+
+            // reset form
+            document.getElementById('post-form').reset();
+        });
+
+        // initial load
+        refresh();
+
+        // also listen for storage changes (e.g., admin moderation)
+        window.addEventListener('storage', function(){ try{ var posts = JSON.parse(localStorage.getItem('posts')) || []; renderPosts(posts); } catch(e){} });
+    })();
+    </script>
+
+    <script>
+    // Toggle create-post visibility and wire prefilling author when user logged in
+    (function(){
+        var btn = document.getElementById('create-post-btn');
+        var panel = document.getElementById('create-post');
+        var closeBtn = document.getElementById('close-create-post');
+        var authorInput = document.getElementById('post-author');
+
+        function showPanel(){
+            // Require login before allowing creating a post
+            var user = null;
+            try{ user = JSON.parse(localStorage.getItem('currentUser')) || null; } catch(e){ user = null; }
+            if(!user){
+                // Try to open site login modal if available
+                if(typeof window.showModal === 'function'){
+                    try{ window.showModal(); return; } catch(e){}
+                }
+                alert('Please sign in to create a post.');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            if(panel) panel.style.display = '';
+            // Prefill author from currentUser if present
+            try{
+                if(user && user.name && authorInput){ authorInput.value = user.name; }
+            } catch(e){}
+            // Scroll into view
+            if(panel) panel.scrollIntoView({ behavior: 'smooth' });
+        }
+        function hidePanel(){ if(panel) panel.style.display = 'none'; }
+
+        if(btn){ btn.addEventListener('click', function(e){ e.preventDefault(); showPanel(); }); }
+        if(closeBtn){ closeBtn.addEventListener('click', function(e){ e.preventDefault(); hidePanel(); }); }
+
+        // If user is admin or posting is allowed, you may show button; otherwise it remains
+        // Start hidden (form) by default; button controls visibility
+    })();
+    </script>
+    <script>
+    // ====== COMMENT MODERATION SYSTEM ======
+
+    // Check if current user is admin
+    function checkAdminAccess() {
+        const profile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+        return profile.role === 'admin';
+    }
+
+    // Initialize admin moderation panel
+    function initAdminPanel() {
+        if (checkAdminAccess()) {
+            document.getElementById('admin-content-review').style.display = 'block';
+            loadAdminComments();
+            // Wire up search functionality
+            document.getElementById('comment-search').addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const rows = document.querySelectorAll('#comments-moderation-list tr');
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(query) ? '' : 'none';
+                });
+            });
+        }
+    }
+
+    // Load all comments for admin review
+    function loadAdminComments() {
+        const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+        const allComments = [];
+
+        posts.forEach((post, index) => {
+            const comments = post.comments || [];
+            comments.forEach((comment, commentIndex) => {
+                allComments.push({
+                    ...comment,
+                    postIndex: index,
+                    postTitle: post.title,
+                    commentIndex: commentIndex
+                });
+            });
+        });
+
+        renderAdminComments(allComments);
+    }
+
+    // Render comments in admin moderation table
+    function renderAdminComments(comments) {
+        const tbody = document.getElementById('comments-moderation-list');
+        tbody.innerHTML = '';
+
+        comments.forEach((comment) => {
+            const status = comment.status || 'approved';
+            const statusColor = status === 'deleted' ? '#ccc' : (status === 'approved' ? '#4CAF50' : '#FFC107');
+            const row = document.createElement('tr');
+            row.style.borderBottom = '1px solid #ddd';
+            if (status === 'deleted') {
+                row.style.backgroundColor = '#f0f0f0';
+                row.style.textDecoration = 'line-through';
+            }
+
+            row.innerHTML = `
+                <td style="padding:10px; max-width:200px; word-wrap:break-word;">${comment.body}</td>
+                <td style="padding:10px;">${comment.author}</td>
+                <td style="padding:10px; max-width:150px; word-wrap:break-word;">${comment.postTitle}</td>
+                <td style="padding:10px; font-size:12px;">${comment.created_at}</td>
+                <td style="padding:10px;">
+                    <span style="background:${statusColor}; color:white; padding:3px 8px; border-radius:4px; font-size:11px;">
+                        ${status.toUpperCase()}
+                    </span>
+                </td>
+                <td style="padding:10px; text-align:center;">
+                    <button class="btn-approve" data-post="${comment.postIndex}" data-comment="${comment.commentIndex}" style="background:#4CAF50; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; margin-right:5px;">Approve</button>
+                    <button class="btn-delete-comment" data-post="${comment.postIndex}" data-comment="${comment.commentIndex}" style="background:#f44336; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Delete</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+
+        // Wire up action buttons
+        document.querySelectorAll('.btn-approve').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const postIndex = parseInt(btn.getAttribute('data-post'));
+                const commentIndex = parseInt(btn.getAttribute('data-comment'));
+                approveComment(postIndex, commentIndex);
+            });
+        });
+
+        document.querySelectorAll('.btn-delete-comment').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const postIndex = parseInt(btn.getAttribute('data-post'));
+                const commentIndex = parseInt(btn.getAttribute('data-comment'));
+                deleteComment(postIndex, commentIndex);
+            });
+        });
+    }
+
+    // Approve comment
+    function approveComment(postIndex, commentIndex) {
+        const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+        if (posts[postIndex] && posts[postIndex].comments && posts[postIndex].comments[commentIndex]) {
+            posts[postIndex].comments[commentIndex].status = 'approved';
+            localStorage.setItem('posts', JSON.stringify(posts));
+            loadAdminComments();
+            renderPosts();
+        }
+    }
+
+    // Delete comment
+    function deleteComment(postIndex, commentIndex) {
+        if (confirm('Delete this comment?')) {
+            const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+            if (posts[postIndex] && posts[postIndex].comments && posts[postIndex].comments[commentIndex]) {
+                posts[postIndex].comments[commentIndex].status = 'deleted';
+                localStorage.setItem('posts', JSON.stringify(posts));
+                loadAdminComments();
+                renderPosts();
+            }
+        }
+    }
+
+    // Initialize admin panel on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        initAdminPanel();
+    });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth/supabaseClient.js"></script>
+    <script src="auth/auth.js"></script>
+    <script src="modals.js"></script>
+</body>
+</html>

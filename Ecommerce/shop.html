@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Shop - DragonStone</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Add Font Awesome for icons if not already included -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <section id="header">
+        <a><span class="Logo"><strong>DragonStone</strong></span></a>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search eco-friendly products..." class="search-bar">
+            <button id="search-btn" class="search-btn" aria-label="Search">GO!</button>
+        </div>
+        <div>
+                <ul id="navbar">
+                <li><a href="index.html">Home</a></li>
+                <li><a class="active" href="shop.html">Shop</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="admin.html" id="admin-link" style="display:none;">Admin</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="section-p1" style="text-align: center;">
+        <h2>All Products</h2>
+        <p>Browse by category</p>
+
+        <div class="shop-controls" style="margin: 18px auto; display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:center; max-width:600px;">
+            <label for="shop-category-filter" style="font-weight:600; margin-right:8px;">Category:</label>
+            <select id="shop-category-filter" style="padding:8px 10px; border-radius:6px;">
+                <option value="all">All</option>
+            </select>
+            <div style="flex:1"></div>
+            <a href="cart.html" class="view-cart-link" style="text-decoration:none; color:var(--shop-color); font-weight:700;">View Cart</a>
+        </div>
+
+        <!-- Grid container where the shop will render products grouped by category -->
+        <div id="shop-products" class="pro-container" style="gap:18px;">
+            <!-- JS will group and render products here -->
+        </div>
+    </section>
+
+    <!-- Product Detail Modal (used by shop and script) -->
+    <div id="product-detail-modal" class="modal" style="display:none">
+        <div class="modal-overlay" id="product-detail-overlay"></div>
+        <div class="modal-content product-detail-content">
+            <button class="close-modal" id="close-product-modal">&times;</button>
+            <div id="product-detail-body">
+                <!-- Product details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Include existing script to provide PRODUCTS and render functions -->
+    <script src="script.js"></script>
+    <script src="shop.js"></script>
+    <script src="modals.js"></script>
+</body>
+</html>

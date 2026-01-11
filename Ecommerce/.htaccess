@@ -1,0 +1,31 @@
+# Apache .htaccess file for DragonStone E-commerce
+# Enable rewrite engine (if not already enabled in httpd.conf)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # Redirect to index.html if file/directory doesn't exist
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^index\.html$ index.html [L]
+</IfModule>
+
+# Enable PHP for .php files
+<IfModule mod_php7.c>
+    php_value upload_max_filesize 10M
+    php_value post_max_size 10M
+</IfModule>
+
+# Security: Protect config files
+<FilesMatch "^(database\.php|\.htaccess)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Enable error reporting (remove in production)
+# php_flag display_errors On
+# php_value error_reporting E_ALL
+
+
+
+

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Registration</title>
+</head>
+<body>
+    <h1>Test Registration</h1>
+    <button onclick="testRegistration()">Test Register</button>
+    <pre id="output"></pre>
+
+    <script>
+        function testRegistration() {
+            var output = document.getElementById('output');
+            output.textContent = 'Testing...';
+            
+            fetch('register.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: 'Test User',
+                    email: 'test' + Date.now() + '@example.com',
+                    phone: '1234567890',
+                    password: 'password123',
+                    confirm_password: 'password123'
+                })
+            })
+            .then(r => r.text())
+            .then(text => {
+                output.textContent = 'Response:\n' + text;
+                console.log('Response:', text);
+            })
+            .catch(err => {
+                output.textContent = 'Error:\n' + err;
+                console.error('Error:', err);
+            });
+        }
+    </script>
+</body>
+</html>

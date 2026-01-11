@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang ="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatiable" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial scale=1.0">
+        <title>DragonStone</title>
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all css" />
+        <link rel="stylesheet" href="style.css">
+
+    </head>
+    <body>
+    <section id="header">
+
+    <a><class="Logo" alt=""><strong>DragonStone</strong></class></a>
+
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search eco-friendly products..." class="search-bar">
+            <button id="search-btn" class="search-btn" aria-label="Search">GO!</button>
+        </div>
+
+    <diV>
+        <ul id="navbar">
+            <li><a class="active" href="index.html" id="home-link">Home</a></li>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="cart.html" id="cart-link"><i class="fa-thin fa-bag-shopping"></i>Cart <span id="cart-count" class="cart-badge" style="display:none">0</span></a></li>
+            <li><a href="admin.html" id="admin-link" style="display:none;">Admin</a></li>
+            <li><a href="#" id="profile-link" style="display:none;">Profile</a></li>
+            <li><a href="#" id="login-link">Login</a></li>
+            <li><a href="#" id="register-link">Register</a></li>
+            <li><a href="index.html" id="logout-link" style="display:none">Logout</a></li>
+        </ul>
+    </diV>
+    </section>
+
+    <section id="hero">
+        <h4>Trade in offers</h4>
+        <h2>Super value deals</h2>
+        <h1>On all products</h1>
+    <p>Save more with Ecopoints & up to 70% off!!</p>
+    <a href="shop.html" class="hero-shop-btn">Shop Now</a>
+    </section>
+
+    <section id="feature" class="section-p1">
+        <div class="f-box">
+            <img src=""alt="">
+            <h6>Fast Delivery</h6>
+        </div>
+        <div class="f-box">
+            <img src=""alt="">
+            <h6>Free Delivery</h6>
+        </div>
+        <div class="f-box">
+            <img src=""alt="">
+            <h6>Online orders</h6>
+        </div>
+        <div class="f-box">
+            <img src=""alt="">
+            <h6>Promotions</h6>
+        </div>
+        <div class="f-box">
+            <img src=""alt="">
+            <h6>Save Money</h6>
+        </div>
+    </section>
+
+    <section id="product1" class="section-p1">
+        <h2>Featured Products</h2>
+        <p>Innovation with Nature</p>
+        <div id="search-results-message" style="display:none; margin: 20px 0; padding: 10px; background: #e8f6ea; border-radius: 4px;"></div>
+        <div class="pro-container" id="products-container">
+            <!-- Products will be dynamically loaded here -->
+        </div>
+        <div style="text-align: center; margin: 12px 18px;">
+            <a href="shop.html" class="shop-more-btn">Shop more</a>
+        </div>
+    </section>
+
+    <!-- Product Detail Modal -->
+    <div id="product-detail-modal" class="modal" style="display:none">
+        <div class="modal-overlay" id="product-detail-overlay"></div>
+        <div class="modal-content product-detail-content">
+            <button class="close-modal" id="close-product-modal">&times;</button>
+            <div id="product-detail-body">
+                <!-- Product details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- User Dashboard -->
+    <section id="user-dashboard" class="section-p1" style="display:none">
+        <h2>Welcome, <span id="user-name-label">User</span></h2>
+        <p>You are logged in as a customer. Explore your orders, EcoPoints and profile.</p>
+        <div class="dashboard-cards">
+            <div class="card" id="view-orders-card" style="cursor: pointer;">
+                <h4>Orders</h4>
+                <p>View and track your recent orders.</p>
+                <p style="margin-top: 10px; font-weight: 600;">Click to view orders</p>
+            </div>
+            <div class="card">
+                <h4>EcoPoints</h4>
+                <p>Current balance: <span id="ecopoints-balance">0</span></p>
+                <p style="margin-top: 10px; color: #4CAF50; font-weight: 600;">Earn points with every purchase!</p>
+            </div>
+            <div class="card" id="manage-profile-card" style="cursor: pointer;">
+                <h4>Profile</h4>
+                <p>Manage your details and preferences.</p>
+                <p style="margin-top: 10px; font-weight: 600;">Click to edit profile</p>
+            </div>
+        </div>
+        
+        <!-- User Orders Section -->
+        <div id="user-orders-section" style="display:none; margin-top: 30px;">
+            <h3>My Orders</h3>
+            <div id="user-orders-list">
+                <!-- Orders will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Profile Management Modal -->
+    <div id="profile-modal" class="modal" style="display:none">
+        <div class="modal-overlay" id="profile-modal-overlay"></div>
+        <div class="modal-content admin-modal-content">
+            <button class="close-modal" id="close-profile-modal">&times;</button>
+            <h3>Profile Management</h3>
+            
+            <!-- Profile Tabs -->
+            <div class="profile-tabs">
+                <button class="profile-tab-btn active" data-tab="personal">Personal Information</button>
+                <button class="profile-tab-btn" data-tab="preferences">Communication Preferences</button>
+            </div>
+
+            <!-- Personal Information Tab -->
+            <div id="personal-tab" class="profile-tab-content active">
+                <form id="profile-form">
+                    <label for="profile-name">Full Name</label>
+                    <input type="text" id="profile-name" name="name" required>
+                    
+                    <label for="profile-email">Email</label>
+                    <input type="email" id="profile-email" name="email" required>
+                    
+                    <label for="profile-phone">Phone Number</label>
+                    <input type="tel" id="profile-phone" name="phone" placeholder="+27 12 345 6789">
+                    
+                    <label for="profile-address">Address</label>
+                    <textarea id="profile-address" name="address" rows="3" placeholder="Street address, City, Postal Code"></textarea>
+                    
+                    <label for="profile-city">City</label>
+                    <input type="text" id="profile-city" name="city" placeholder="Pretoria">
+                    
+                    <label for="profile-postal-code">Postal Code</label>
+                    <input type="text" id="profile-postal-code" name="postalCode" placeholder="0001">
+                    
+                    <h4 style="margin-top: 20px;">Change Password</h4>
+                    <label for="profile-current-password">Current Password</label>
+                    <input type="password" id="profile-current-password" name="currentPassword" placeholder="Enter current password to change">
+                    
+                    <label for="profile-new-password">New Password</label>
+                    <input type="password" id="profile-new-password" name="newPassword" placeholder="Enter new password">
+                    
+                    <label for="profile-confirm-password">Confirm New Password</label>
+                    <input type="password" id="profile-confirm-password" name="confirmPassword" placeholder="Confirm new password">
+                    
+                    <div id="profile-error" style="color: var(--shop-color); font-size: 14px; margin: 10px 0; display:none;"></div>
+                    <div id="profile-success" style="color: green; font-size: 14px; margin: 10px 0; display:none;"></div>
+                    
+                    <div class="modal-actions">
+                        <button type="submit" class="btn-primary">Save Changes</button>
+                        <button type="button" class="btn-secondary" id="cancel-profile-modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Communication Preferences Tab -->
+            <div id="preferences-tab" class="profile-tab-content">
+                <h4>Newsletter & Communication Preferences</h4>
+                <form id="preferences-form">
+                    <div style="margin: 20px 0;">
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="checkbox" id="newsletter-subscription" name="newsletter" style="margin-right: 10px; width: auto;">
+                            <span>Subscribe to Newsletter</span>
+                        </label>
+                        <p style="font-size: 12px; color: #465b52; margin: 5px 0 0 30px;">
+                            Receive updates about new products, special offers, and eco-friendly tips.
+                        </p>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="checkbox" id="promotional-emails" name="promotional" style="margin-right: 10px; width: auto;">
+                            <span>Promotional Emails</span>
+                        </label>
+                        <p style="font-size: 12px; color: #465b52; margin: 5px 0 0 30px;">
+                            Receive promotional emails about sales, discounts, and exclusive deals.
+                        </p>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="checkbox" id="product-updates" name="productUpdates" style="margin-right: 10px; width: auto;">
+                            <span>Product Updates</span>
+                        </label>
+                        <p style="font-size: 12px; color: #465b52; margin: 5px 0 0 30px;">
+                            Get notified when new eco-friendly products are added to our store.
+                        </p>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="checkbox" id="order-updates" name="orderUpdates" style="margin-right: 10px; width: auto;">
+                            <span>Order Updates</span>
+                        </label>
+                        <p style="font-size: 12px; color: #465b52; margin: 5px 0 0 30px;">
+                            Receive email notifications about your order status and shipping updates.
+                        </p>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="checkbox" id="eco-tips" name="ecoTips" style="margin-right: 10px; width: auto;">
+                            <span>Eco Tips & Sustainability</span>
+                        </label>
+                        <p style="font-size: 12px; color: #465b52; margin: 5px 0 0 30px;">
+                            Receive tips and articles about sustainable living and environmental impact.
+                        </p>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <label>Email Frequency</label>
+                        <select id="email-frequency" name="emailFrequency" style="width: 100%; padding: 10px; margin-top: 5px;">
+                            <option value="weekly">Weekly</option>
+                            <option value="biweekly">Bi-weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="never">Never</option>
+                        </select>
+                    </div>
+                    
+                    <div id="preferences-success" style="color: green; font-size: 14px; margin: 10px 0; display:none;"></div>
+                    
+                    <div class="modal-actions">
+                        <button type="submit" class="btn-primary">Save Preferences</button>
+                        <button type="button" class="btn-secondary" id="cancel-preferences-modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <section id="admin-dashboard" class="section-p1" style="display:none">
+        <h2>Admin Dashboard</h2>
+        <p>Manage products, orders, users and content moderation.</p>
+        <div class="dashboard-cards">
+            <div class="card" onclick="window.location.href='admin.html'" style="cursor: pointer;">
+                <h4>Products</h4>
+                <p>Add, edit and remove products.</p>
+            </div>
+            <div class="card" onclick="window.location.href='admin.html'" style="cursor: pointer;">
+                <h4>Orders</h4>
+                <p>Review and fulfill recent orders.</p>
+            </div>
+            <div class="card" onclick="window.location.href='admin.html'" style="cursor: pointer;">
+                <h4>Users</h4>
+                <p>View customers and roles.</p>
+            </div>
+        </div>
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="admin.html" class="btn-primary" style="display: inline-block; text-decoration: none; padding: 12px 30px;">Go to Full Admin Dashboard</a>
+        </div>
+    </section>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal" style="display:none">
+        <div class="modal-overlay" id="login-overlay"></div>
+        <div class="modal-content">
+            <h3>Login</h3>
+            <form id="login-form">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="you@example.com" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter password" required>
+
+                <button type="submit" id="login-submit">Sign In</button>
+                <button type="button" id="login-cancel" class="secondary">Cancel</button>
+            </form>
+            <p id="login-message"></p>
+            <div class="hint">
+                <p style="margin-top: 10px;"><a href="#" id="show-register-link" style="color: var(--shop-color); text-decoration: underline;">Don't have an account? Register</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div id="register-modal" class="modal" style="display:none">
+        <div class="modal-overlay" id="register-overlay"></div>
+        <div class="modal-content">
+            <h3>Create Account</h3>
+            <form id="register-form">
+                <label for="reg-name">Full Name</label>
+                <input type="text" id="reg-name" name="name" placeholder="John Doe" required>
+
+                <label for="reg-email">Email</label>
+                <input type="email" id="reg-email" name="email" placeholder="you@example.com" required>
+
+                <label for="reg-phone">Phone Number</label>
+                <input type="tel" id="reg-phone" name="phone" placeholder="+27 12 345 6789">
+
+                <label for="reg-password">Password</label>
+                <input type="password" id="reg-password" name="password" placeholder="Enter password" required minlength="6">
+
+                <label for="reg-confirm-password">Confirm Password</label>
+                <input type="password" id="reg-confirm-password" name="confirm_password" placeholder="Confirm password" required>
+
+                <!-- Account type removed; default to Customer on registration -->
+
+                <div id="register-error" style="color: var(--shop-color); font-size: 14px; margin: 10px 0; display:none;"></div>
+                <div id="register-success" style="color: green; font-size: 14px; margin: 10px 0; display:none;"></div>
+
+                <button type="submit" id="register-submit">Register</button>
+                <button type="button" id="register-cancel" class="secondary">Cancel</button>
+                <!-- Move the "Already have an account? Login" link under the cancel button -->
+                <p style="margin-top:10px;"><a href="#" id="show-login-link" style="color: var(--shop-color); text-decoration: underline;">Already have an account? Login</a></p>
+            </form>
+        </div>
+    </div>
+
+    <footer class="section-p1">
+        <div class="col">
+            <h4>Contact</h4>
+            <p><strong>Address: </strong> 643 Burrnett Road, 2nd Ave, Pretoria</p>
+            <p><strong>Phone: </strong> + 27 12 259 2998</p>
+            <p><strong>Hours: </strong> 08:00 - 18:00, MON - SAT </p>           
+        </div>
+
+        <div class="col">
+            <h4>My Account</h4>
+            <!-- These links are wired to the site's login modal and dashboard behaviors -->
+            <a href="#" id="footer-signin">Sign In</a>
+            <a href="cart.html">View Cart</a>
+            <a href="#" id="footer-trackorder">Track My Order</a>
+            <a href="contact.html">Contact Us</a>
+        </div>
+
+        <div class="cpright">
+             <p>&copy; 2025 DragonStone. All rights reserved.</p>
+        </div>
+    </footer>
+       
+        <script>
+            // Footer links: Sign In -> open login modal; Track My Order -> show user orders or open login
+            (function(){
+                function openLoginModal(){
+                    var loginLink = document.getElementById('login-link');
+                    if(loginLink){ loginLink.click(); return true; }
+                    return false;
+                }
+
+                function showUserOrders(){
+                    try{
+                        var user = null;
+                        try{ user = JSON.parse(localStorage.getItem('currentUser')); } catch(e){ user = null; }
+                        if(!user){
+                            // not logged in -> open login modal
+                            openLoginModal();
+                            return;
+                        }
+
+                        // Hide homepage sections
+                        var hero = document.getElementById('hero'); if(hero) hero.style.display = 'none';
+                        var feature = document.getElementById('feature'); if(feature) feature.style.display = 'none';
+                        var product1 = document.getElementById('product1'); if(product1) product1.style.display = 'none';
+
+                        // Show user dashboard
+                        var userDash = document.getElementById('user-dashboard');
+                        if(userDash){
+                            userDash.style.display = '';
+                        }
+
+                        // Update UI elements if present
+                        var userNameLabel = document.getElementById('user-name-label'); if(userNameLabel) userNameLabel.textContent = user.name || user.email;
+                        var ecoPointsLabel = document.getElementById('ecopoints-balance'); if(ecoPointsLabel && user.role === 'user') ecoPointsLabel.textContent = String(user.ecopoints || 0);
+
+                        // Ensure orders section is visible
+                        var ordersSection = document.getElementById('user-orders-section');
+                        if(ordersSection){ ordersSection.style.display = ''; ordersSection.scrollIntoView({behavior: 'smooth'}); }
+                    } catch(e){
+                        console.error('Error showing user orders:', e);
+                        openLoginModal();
+                    }
+                }
+
+                var fSign = document.getElementById('footer-signin');
+                if(fSign){ fSign.addEventListener('click', function(e){ e.preventDefault(); openLoginModal(); }); }
+
+                var fTrack = document.getElementById('footer-trackorder');
+                if(fTrack){ fTrack.addEventListener('click', function(e){ e.preventDefault(); showUserOrders(); }); }
+            })();
+        </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="auth/supabaseClient.js"></script>
+        <script src="auth/auth.js"></script>
+        <script src="modals.js"></script>
+        <script src="purchase.js"></script>
+        <script src="script.js"></script>
+        <script src="user-profile.js"></script>
+    </body>
+</html>
