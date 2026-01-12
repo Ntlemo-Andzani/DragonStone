@@ -1,12 +1,7 @@
-$tomlContent = @'
 [build]
-  publish = "."
-  command = "echo 'Static site deploy'"
+publish = "."
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-'@
-
-$tomlContent | Out-File -FilePath "netlify.toml" -Encoding UTF8
+from = "/*"
+to = "/index.html"
+status = 200
