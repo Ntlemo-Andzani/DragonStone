@@ -1,0 +1,14 @@
+[build]
+  publish = "."  # Netlify serves from root
+  command = "echo 'Building...'"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# If you have PHP files (they won't execute on Netlify - it's static only)
+[[redirects]]
+  from = "/login.php"
+  to = "/login.html"  # Redirect PHP to HTML
+  status = 200
