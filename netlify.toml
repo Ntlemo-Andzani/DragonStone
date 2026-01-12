@@ -1,14 +1,18 @@
+# Replace your netlify.toml with this:
+@'
 [build]
-  publish = "."  # Netlify serves from root
-  command = "echo 'Building...'"
+  publish = "."
+  command = "echo 'Static site - no build needed'"
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# If you have PHP files (they won't execute on Netlify - it's static only)
-[[redirects]]
-  from = "/login.php"
-  to = "/login.html"  # Redirect PHP to HTML
-  status = 200
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+'@ | Out-File -FilePath "netlify.toml" -Encoding UTF8 -Force
