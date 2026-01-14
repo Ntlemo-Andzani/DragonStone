@@ -1,3 +1,31 @@
+// Protect admin page
+window.addEventListener('DOMContentLoaded', async () => {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    
+    if (!session) {
+        // Not logged in at all
+        alert('You must log in first.');
+        window.location.href = 'login.html';
+        return;
+    }
+
+    // Optionally, check role from profiles table
+    const { data: profile, error } = await supabaseClient
+        .from('profiles')
+        .select('role')
+        .eq('id', session.user.id)
+        .single();
+
+    if (error || !profile || profile.role !== 'admin') {
+        alert('Access denied: Admins only.');
+        window.location.href = 'index.html';
+        return;
+    }
+
+    // Only now initialize the admin dashboard
+    initAdmin();
+});
+
 // Admin Dashboard Functionality
 async function initAdmin(){
     // Try to sync users from server on admin load (non-blocking). This will
