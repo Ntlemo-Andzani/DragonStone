@@ -131,6 +131,7 @@ async function loadSession() {
     updateUIForAuth(null);
     return;
   }
+  
   const { data } = await supabaseClient.auth.getSession();
 
   if (data.session && data.session.user) {
@@ -226,12 +227,46 @@ try {
 loadSession();
 
 //Logout supa
+
 async function logout() {
-  await supabaseClient.auth.signOut();
-  localStorage.clear();
-  sessionStorage.clear();
-  window.location.href = 'index.html';
+  try {
+    // Sign out from Supabase
+    if (supabaseClient) {
+      await supabaseClient.auth.signOut();
+    }
+
+    // Clear UI helper storage
+    clearCurrentUser();
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Hide admin and user dashboards
+    const adminDash = document.getElementById('admin-dashboard');
+    const userDash = document.getElementById('user-dashboard');
+    if (adminDash) adminDash.style.display = 'none';
+    if (userDash) userDash.style.display = 'none';
+
+    // Hide admin link
+    const adminLink = document.getElementById('admin-link');
+    if (adminLink) adminLink.style.display = 'none';
+
+    // Update UI to show login button
+    updateUIForAuth(null);
+
+    // Optional: Clear cart
+    if (window.__cart && typeof window.__cart.clearCart === 'function') {
+      await window.__cart.clearCart();
+    }
+
+    // Redirect to home page
+    window.location.href = 'index.html';
+  } catch (err) {
+    console.error('Logout failed:', err);
+    alert('Logout failed. Please try again.');
+  }
 }
+
+
 
 // Example: Reset password (commented out - use when needed)
 // if (supabaseClient) {
