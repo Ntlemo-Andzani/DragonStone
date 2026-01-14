@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function initShop() {
     const products = getProducts();
+    window.__SHOP_PRODUCTS__ = products;
     renderShop(products, 'all');
     setupEventListeners();
     setupCategoryFilter(products);
@@ -184,7 +185,7 @@ function attachProductEventListeners() {
         button.addEventListener('click', function(e) {
             e.preventDefault();
             const productId = this.dataset.id;
-            const products = getProducts();
+            const products = window.__SHOP_PRODUCTS__ || [];
             const product = products.find(p => String(p.id) === String(productId));
             if (product) {
                 // Prefer existing showProductDetail if available
@@ -270,17 +271,28 @@ function openProductDetails(product) {
     `;
     modal.style.display = 'block';
     const addBtn = document.getElementById('modal-add-to-cart');
-    if (addBtn) addBtn.addEventListener('click', function(){
-        // prevent double events
-        event && event.stopPropagation && event.stopPropagation();
-        if (window.__cart && typeof window.__cart.addToCart === 'function'){
-            Promise.resolve(window.__cart.addToCart(product.id, product.name, product.price, product.image || ''))
-                .then(() => { if (window.__cart && typeof window.__cart.updateCartCount === 'function') window.__cart.updateCartCount(); })
-                .catch(err => console.warn('Error adding to cart from modal:', err));
-        } else if (typeof addToCart === 'function'){
-            try { addToCart(product.id, product.name, product.price, product.image || ''); } catch(err){ console.warn('Fallback addToCart failed', err); }
-        }
-    });
+if (addBtn) addBtn.addEventListener('click', function(e){
+    e.stopPropagation(); // prevent double events
+
+    const products = window.__SHOP_PRODUCTS__ || [];
+    const productId = this.dataset.id;
+    const product = products.find(p => String(p.id) === String(productId));
+
+    if (!product) return;
+
+    if (window.__cart && typeof window.__cart.addToCart === 'function'){
+        Promise.resolve(window.__cart.addToCart(product.id, product.name, product.price, product.image || ''))
+            .then(() => { 
+                if (window.__cart && typeof window.__cart.updateCartCount === 'function') 
+                    window.__cart.updateCartCount(); 
+            })
+            .catch(err => console.warn('Error adding to cart from modal:', err));
+    } else if (typeof addToCart === 'function'){
+        try { addToCart(product.id, product.name, product.price, product.image || ''); } 
+        catch(err){ console.warn('Fallback addToCart failed', err); }
+    }
+}, { once: true }); // ensures listener is only attached once
+
 }
 
 function addToCart(productId){
