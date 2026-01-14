@@ -28,7 +28,36 @@
             return [];
         }
     }
-    
+
+        window.__cart = {
+    addToCart: function (id, name, price, image) {
+        let cart = getCart();
+
+        let existing = cart.find(item => String(item.id) === String(id));
+        if (existing) {
+            existing.quantity = (existing.quantity || 1) + 1;
+        } else {
+            cart.push({
+                id,
+                name,
+                price: Number(price),
+                image: image || '',
+                quantity: 1
+            });
+        }
+
+        saveCart(cart);
+    },
+
+    updateCartCount: function () {
+        const cart = getCart();
+        const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+        const el = document.getElementById('cart-count');
+        if (el) el.textContent = count;
+    }
+};
+
     // Save cart 
     function saveCart(cart){
         localStorage.setItem('cart', JSON.stringify(cart));
